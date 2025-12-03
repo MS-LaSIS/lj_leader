@@ -124,13 +124,13 @@ void LJLeaderNode::read_and_publish()
   }
   
   // Calculate and publish steering ratio
-  double steering_ratio = calculate_steering_ratio();
+  double steering_ratio = calculate_steering_ratio(voltages);
   auto steering_msg = std_msgs::msg::Float32();
   steering_msg.data = static_cast<float>(steering_ratio);
   steering_pub_->publish(steering_msg);
   
   // Calculate and publish throttle ratio
-  double throttle_ratio = calculate_throttle_ratio();
+  double throttle_ratio = calculate_throttle_ratio(voltages);
   auto pedal_msg = std_msgs::msg::Float32();
   pedal_msg.data = static_cast<float>(throttle_ratio);
   pedal_pub_->publish(pedal_msg);
@@ -178,15 +178,8 @@ bool LJLeaderNode::is_valid(double master1, double master2, double slave1, doubl
   return true;
 }
 
-double LJLeaderNode::calculate_steering_ratio()
+double LJLeaderNode::calculate_steering_ratio(const double voltages[12])
 {
-  // Read all voltages
-  double voltages[12];
-  int err = read_all_voltages(voltages);
-  
-  if (err != LJME_NOERROR) {
-    return 0.0;
-  }
   
   // Extract steering voltages
   double steer_master1 = voltages[0];  // AIN0
@@ -218,15 +211,8 @@ double LJLeaderNode::calculate_steering_ratio()
   return steering_ratio;
 }
 
-double LJLeaderNode::calculate_throttle_ratio()
+double LJLeaderNode::calculate_throttle_ratio(const double voltages[12])
 {
-  // Read all voltages
-  double voltages[12];
-  int err = read_all_voltages(voltages);
-  
-  if (err != LJME_NOERROR) {
-    return 0.0;
-  }
   
   // Extract throttle voltages
   double throttle_master1 = voltages[4];  // AIN4

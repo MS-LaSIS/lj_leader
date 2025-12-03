@@ -14,8 +14,8 @@ public:
 
 private:
   void read_and_publish();
-  double calculate_steering_ratio();
-  double calculate_throttle_ratio();
+  double calculate_steering_ratio(const double voltages[12]);
+  double calculate_throttle_ratio(const double voltages[12]);
   int read_all_voltages(double voltages[12]);
   bool is_valid(double master1, double master2, double slave1, double slave2,
                 double nominal_master, double nominal_slave,
